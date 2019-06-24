@@ -34,11 +34,12 @@ public class NettyServer {
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
                     protected void initChannel(NioSocketChannel ch) throws Exception {
-
+                        ch.pipeline().addLast(new ServerHandler());
                     }
                 });
 
-        serverBootstrap.bind(PORT);
+       // serverBootstrap.bind(PORT);
+        bind(serverBootstrap, PORT);
     }
 
     //绑定端口时，显示是否绑定成功
