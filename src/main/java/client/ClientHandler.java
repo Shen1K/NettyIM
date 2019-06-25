@@ -6,6 +6,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import packet.Packet;
 import packet.request.LoginRequestPacket;
 import packet.response.LoginResponsePacket;
+import packet.response.MessageResponsePacket;
 import serialize.PacketCodec;
 
 import java.util.Date;
@@ -45,6 +46,9 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
                 System.out.println(new Date() + "：客户端登录成功");
             else
                 System.out.println(new Date() + ": 客户端登录失败，原因" + loginResponsePacket.getReason());
+        }else if(packet instanceof MessageResponsePacket){
+            MessageResponsePacket messageResponsePacket = (MessageResponsePacket) packet;
+            System.out.println(new Date() + "：收到客户端消息："+messageResponsePacket.getMessage());
         }
     }
 }
