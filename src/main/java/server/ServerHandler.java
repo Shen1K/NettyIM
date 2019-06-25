@@ -5,7 +5,9 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import packet.Packet;
 import packet.request.LoginRequestPacket;
+import packet.request.MessageRequestPacket;
 import packet.response.LoginResponsePacket;
+import packet.response.MessageResponsePacket;
 import serialize.PacketCodec;
 
 import java.util.Date;
@@ -39,6 +41,15 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
             //登录响应
             ByteBuf responseByteBuf = PacketCodec.INSTANCE.encode(loginResponsePacket);
+            ctx.channel().writeAndFlush(responseByteBuf);
+        }else if(packet instanceof MessageRequestPacket){
+            MessageRequestPacket messageRequestPacket = (MessageRequestPacket) packet;
+
+            MessageResponsePacket messageResponsePacket = new MessageResponsePacket();
+            System.out.println(new Date() + ": 收到客户端消息: " + messageRequestPacket.getMessage());
+
+            messageResponsePacket.setMessage("服务端回复："+messageRequestPacket.getMessage());
+            ByteBuf responseByteBuf = PacketCodec.INSTANCE.encode(messageResponsePacket);
             ctx.channel().writeAndFlush(responseByteBuf);
         }
     }

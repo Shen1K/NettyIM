@@ -2,9 +2,12 @@ package serialize;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
+import packet.Command;
 import packet.Packet;
 import packet.request.LoginRequestPacket;
+import packet.request.MessageRequestPacket;
 import packet.response.LoginResponsePacket;
+import packet.response.MessageResponsePacket;
 import serialize.impl.JSONSerializer;
 
 import java.util.HashMap;
@@ -28,6 +31,8 @@ public class PacketCodec {
         packetTypeMap = new HashMap<>();
         packetTypeMap.put(LOGIN_REQUEST, LoginRequestPacket.class);
         packetTypeMap.put(LOGIN_RESPONSE, LoginResponsePacket.class);
+        packetTypeMap.put(Command.MESSAGE_REQUEST, MessageRequestPacket.class);
+        packetTypeMap.put(Command.MESSAGE_RESPONSE, MessageResponsePacket.class);
 
         serializerMap = new HashMap<>();
         Serializer serializer = new JSONSerializer();
