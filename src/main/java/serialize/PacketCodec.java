@@ -39,6 +39,21 @@ public class PacketCodec {
         serializerMap.put(serializer.getSerializerAlogrithm(), serializer);
     }
 
+    public ByteBuf encode(ByteBuf byteBuf, Packet packet){
+        //1.序列化java对象
+        byte[] bytes = Serializer.DEFAULT.serialize(packet);
+
+        //2.实际的编码过程
+        byteBuf.writeInt(MAGIC_NUMBER);
+        byteBuf.writeByte(packet.getVersion());
+        byteBuf.writeByte(Serializer.DEFAULT.getSerializerAlogrithm());
+        byteBuf.writeByte(packet.getCommand());
+        byteBuf.writeInt(bytes.length);
+        byteBuf.writeBytes(bytes);
+
+        return byteBuf;
+    }
+
     public ByteBuf encode(Packet packet){
         //1.创建ByteBuf对象
         ByteBuf byteBuf = ByteBufAllocator.DEFAULT.ioBuffer();
