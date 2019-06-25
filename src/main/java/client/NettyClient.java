@@ -2,13 +2,19 @@ package client;
 
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import packet.request.MessageRequestPacket;
+import serialize.PacketCodec;
+import util.Util;
 
 import java.util.Date;
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class NettyClient {
@@ -57,6 +63,24 @@ public class NettyClient {
                 bootstrap.config().group().schedule(()->connect(bootstrap, host, port, retry-1), dely,
                         TimeUnit.SECONDS);
             }
+        });
+    }
+
+    private static void startConsoleThread(Channel channel){
+        new Thread(()->{
+           while (!Thread.interrupted()){
+               //说明当前用户已经注册
+               if(Util.hasLogin(channel)){
+                   System.out.println("输入消息至服务端：");
+                   Scanner sc = new Scanner(System.in);
+                   String line  = sc.nextLine();
+
+                   MessageRequestPacket packet = new MessageRequestPacket();
+                   packet.setMessage(line);
+                   ByteBuf byteBuf = PacketCodec.INSTANCE.encode(packet);
+                   channel.writeAndFlush(byteBuf);
+               }
+           }
         });
     }
 }
