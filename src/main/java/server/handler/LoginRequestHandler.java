@@ -4,6 +4,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import packet.request.LoginRequestPacket;
 import packet.response.LoginResponsePacket;
+import util.Util;
 
 import java.util.Date;
 
@@ -15,6 +16,7 @@ public class LoginRequestHandler extends SimpleChannelInboundHandler<LoginReques
         loginResponsePacket.setVersion(msg.getVersion());
 
         if(valid(msg)){
+            Util.markAsLogin(ctx.channel());
             loginResponsePacket.setSuccess(true);
             System.out.println(new Date() + "£ºµÇÂ¼³É¹¦£¡");
         }else {
