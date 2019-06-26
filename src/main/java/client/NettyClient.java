@@ -40,7 +40,7 @@ public class NettyClient {
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel ch) throws Exception {
-                        ch.pipeline().addLast(new ClientHandler());
+
                     }
                 });
 
@@ -69,18 +69,17 @@ public class NettyClient {
     private static void startConsoleThread(Channel channel){
         new Thread(()->{
            while (!Thread.interrupted()){
-               //说明当前用户已经注册
-               if(Util.hasLogin(channel)){
-                   System.out.println("输入消息至服务端：");
-                   Scanner sc = new Scanner(System.in);
-                   String line  = sc.nextLine();
 
-                   MessageRequestPacket packet = new MessageRequestPacket();
-                   packet.setMessage(line);
-                   ByteBuf byteBuf = PacketCodec.INSTANCE.encode(packet);
-                   channel.writeAndFlush(byteBuf);
+               System.out.println("输入消息至服务端：");
+               Scanner sc = new Scanner(System.in);
+               String line  = sc.nextLine();
+
+               MessageRequestPacket packet = new MessageRequestPacket();
+               packet.setMessage(line);
+               ByteBuf byteBuf = PacketCodec.INSTANCE.encode(packet);
+               channel.writeAndFlush(byteBuf);
                }
-           }
+
         });
     }
 }
